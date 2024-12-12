@@ -29,13 +29,13 @@
     group: root
     mode: '0644'
 
-# - name: Copy Prometheus node exporter additional rules
-#   copy:
-#     src: "prometheus_config/node.rules.yml"
-#     dest: "/opt/prometheus/node.rules.yml"
-#     owner: root
-#     group: root
-#     mode: '0644'
+- name: Copy Prometheus alerts exporter additional rules
+  copy:
+    src: "prometheus_config/alerts.rules.yml"
+    dest: "/opt/prometheus/alerts.rules.yml"
+    owner: root
+    group: root
+    mode: '0644'
 
 - name: Copy Docker-compose for Prometheus
   template:
