@@ -1,196 +1,121 @@
-"groups":
-- "name": "node-exporter-alerts"
-  "rules":
-  - "alert": "NodeFilesystemSpaceFillingUp"
-    "annotations":
-      "description": "Filesystem on {{ $labels.device }} at {{ $labels.instance }} has only {{ printf \"%.2f\" $value }}% available space left and is filling up."
-      "summary": "Filesystem is predicted to run out of space within the next 24 hours."
-    "expr": |
-      (
-        node_filesystem_avail_bytes{job="node",fstype!=""} / node_filesystem_size_bytes{job="node",fstype!=""} * 100 < 40
-      and
-        predict_linear(node_filesystem_avail_bytes{job="node",fstype!=""}[6h], 24*60*60) < 0
-      and
-        node_filesystem_readonly{job="node",fstype!=""} == 0
-      )
-    "for": "1h"
-    "labels":
-      "severity": "warning"
-  - "alert": "NodeFilesystemSpaceFillingUp"
-    "annotations":
-      "description": "Filesystem on {{ $labels.device }} at {{ $labels.instance }} has only {{ printf \"%.2f\" $value }}% available space left and is filling up fast."
-      "summary": "Filesystem is predicted to run out of space within the next 4 hours."
-    "expr": |
-      (
-        node_filesystem_avail_bytes{job="node",fstype!=""} / node_filesystem_size_bytes{job="node",fstype!=""} * 100 < 20
-      and
-        predict_linear(node_filesystem_avail_bytes{job="node",fstype!=""}[6h], 4*60*60) < 0
-      and
-        node_filesystem_readonly{job="node",fstype!=""} == 0
-      )
-    "for": "1h"
-    "labels":
-      "severity": "critical"
-  - "alert": "NodeFilesystemAlmostOutOfSpace"
-    "annotations":
-      "description": "Filesystem on {{ $labels.device }} at {{ $labels.instance }} has only {{ printf \"%.2f\" $value }}% available space left."
-      "summary": "Filesystem has less than 5% space left."
-    "expr": |
-      (
-        node_filesystem_avail_bytes{job="node",fstype!=""} / node_filesystem_size_bytes{job="node",fstype!=""} * 100 < 5
-      and
-        node_filesystem_readonly{job="node",fstype!=""} == 0
-      )
-    "for": "1h"
-    "labels":
-      "severity": "warning"
-  - "alert": "NodeFilesystemAlmostOutOfSpace"
-    "annotations":
-      "description": "Filesystem on {{ $labels.device }} at {{ $labels.instance }} has only {{ printf \"%.2f\" $value }}% available space left."
-      "summary": "Filesystem has less than 3% space left."
-    "expr": |
-      (
-        node_filesystem_avail_bytes{job="node",fstype!=""} / node_filesystem_size_bytes{job="node",fstype!=""} * 100 < 3
-      and
-        node_filesystem_readonly{job="node",fstype!=""} == 0
-      )
-    "for": "1h"
-    "labels":
-      "severity": "critical"
-  - "alert": "NodeFilesystemFilesFillingUp"
-    "annotations":
-      "description": "Filesystem on {{ $labels.device }} at {{ $labels.instance }} has only {{ printf \"%.2f\" $value }}% available inodes left and is filling up."
-      "summary": "Filesystem is predicted to run out of inodes within the next 24 hours."
-    "expr": |
-      (
-        node_filesystem_files_free{job="node",fstype!=""} / node_filesystem_files{job="node",fstype!=""} * 100 < 40
-      and
-        predict_linear(node_filesystem_files_free{job="node",fstype!=""}[6h], 24*60*60) < 0
-      and
-        node_filesystem_readonly{job="node",fstype!=""} == 0
-      )
-    "for": "1h"
-    "labels":
-      "severity": "warning"
-  - "alert": "NodeFilesystemFilesFillingUp"
-    "annotations":
-      "description": "Filesystem on {{ $labels.device }} at {{ $labels.instance }} has only {{ printf \"%.2f\" $value }}% available inodes left and is filling up fast."
-      "summary": "Filesystem is predicted to run out of inodes within the next 4 hours."
-    "expr": |
-      (
-        node_filesystem_files_free{job="node",fstype!=""} / node_filesystem_files{job="node",fstype!=""} * 100 < 20
-      and
-        predict_linear(node_filesystem_files_free{job="node",fstype!=""}[6h], 4*60*60) < 0
-      and
-        node_filesystem_readonly{job="node",fstype!=""} == 0
-      )
-    "for": "1h"
-    "labels":
-      "severity": "critical"
-  - "alert": "NodeFilesystemAlmostOutOfFiles"
-    "annotations":
-      "description": "Filesystem on {{ $labels.device }} at {{ $labels.instance }} has only {{ printf \"%.2f\" $value }}% available inodes left."
-      "summary": "Filesystem has less than 5% inodes left."
-    "expr": |
-      (
-        node_filesystem_files_free{job="node",fstype!=""} / node_filesystem_files{job="node",fstype!=""} * 100 < 5
-      and
-        node_filesystem_readonly{job="node",fstype!=""} == 0
-      )
-    "for": "1h"
-    "labels":
-      "severity": "warning"
-  - "alert": "NodeFilesystemAlmostOutOfFiles"
-    "annotations":
-      "description": "Filesystem on {{ $labels.device }} at {{ $labels.instance }} has only {{ printf \"%.2f\" $value }}% available inodes left."
-      "summary": "Filesystem has less than 3% inodes left."
-    "expr": |
-      (
-        node_filesystem_files_free{job="node",fstype!=""} / node_filesystem_files{job="node",fstype!=""} * 100 < 3
-      and
-        node_filesystem_readonly{job="node",fstype!=""} == 0
-      )
-    "for": "1h"
-    "labels":
-      "severity": "critical"
-  - "alert": "NodeNetworkReceiveErrs"
-    "annotations":
-      "description": "{{ $labels.instance }} interface {{ $labels.device }} has encountered {{ printf \"%.0f\" $value }} receive errors in the last two minutes."
-      "summary": "Network interface is reporting many receive errors."
-    "expr": |
-      rate(node_network_receive_errs_total[2m]) / rate(node_network_receive_packets_total[2m]) > 0.01
-    "for": "1h"
-    "labels":
-      "severity": "warning"
-  - "alert": "NodeNetworkTransmitErrs"
-    "annotations":
-      "description": "{{ $labels.instance }} interface {{ $labels.device }} has encountered {{ printf \"%.0f\" $value }} transmit errors in the last two minutes."
-      "summary": "Network interface is reporting many transmit errors."
-    "expr": |
-      rate(node_network_transmit_errs_total[2m]) / rate(node_network_transmit_packets_total[2m]) > 0.01
-    "for": "1h"
-    "labels":
-      "severity": "warning"
-  - "alert": "NodeHighNumberConntrackEntriesUsed"
-    "annotations":
-      "description": "{{ $value | humanizePercentage }} of conntrack entries are used."
-      "summary": "Number of conntrack are getting close to the limit."
-    "expr": |
-      (node_nf_conntrack_entries / node_nf_conntrack_entries_limit) > 0.75
-    "labels":
-      "severity": "warning"
-  - "alert": "NodeTextFileCollectorScrapeError"
-    "annotations":
-      "description": "Node Exporter text file collector failed to scrape."
-      "summary": "Node Exporter text file collector failed to scrape."
-    "expr": |
-      node_textfile_scrape_error{job="node"} == 1
-    "labels":
-      "severity": "warning"
-  - "alert": "NodeClockSkewDetected"
-    "annotations":
-      "description": "Clock on {{ $labels.instance }} is out of sync by more than 300s. Ensure NTP is configured correctly on this host."
-      "summary": "Clock skew detected."
-    "expr": |
-      (
-        node_timex_offset_seconds > 0.05
-      and
-        deriv(node_timex_offset_seconds[5m]) >= 0
-      )
-      or
-      (
-        node_timex_offset_seconds < -0.05
-      and
-        deriv(node_timex_offset_seconds[5m]) <= 0
-      )
-    "for": "10m"
-    "labels":
-      "severity": "warning"
-  - "alert": "NodeClockNotSynchronising"
-    "annotations":
-      "description": "Clock on {{ $labels.instance }} is not synchronising. Ensure NTP is configured on this host."
-      "summary": "Clock not synchronising."
-    "expr": |
-      min_over_time(node_timex_sync_status[5m]) == 0
-      and
-      node_timex_maxerror_seconds >= 16
-    "for": "10m"
-    "labels":
-      "severity": "warning"
-  - "alert": "NodeRAIDDegraded"
-    "annotations":
-      "description": "RAID array '{{ $labels.device }}' on {{ $labels.instance }} is in degraded state due to one or more disks failures. Number of spare drives is insufficient to fix issue automatically."
-      "summary": "RAID Array is degraded"
-    "expr": |
-      node_md_disks_required - ignoring (state) (node_md_disks{state="active"}) > 0
-    "for": "15m"
-    "labels":
-      "severity": "critical"
-  - "alert": "NodeRAIDDiskFailure"
-    "annotations":
-      "description": "At least one device in RAID array on {{ $labels.instance }} failed. Array '{{ $labels.device }}' needs attention and possibly a disk swap."
-      "summary": "Failed device in RAID array"
-    "expr": |
-      node_md_disks{state="failed"} > 0
-    "labels":
-      "severity": "warning"
+groups:
+  - name: node_os_alerts
+    rules:
+
+      # CPU Usage Alerts
+      - alert: HighCPUUsage
+        expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{job="node", mode="idle"}[5m])) * 100) > 90
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High CPU usage detected on {{ $labels.instance }}"
+          description: "CPU usage has exceeded 90% for more than 5 minutes."
+
+      - alert: HighLoadAverage
+        expr: node_load1{job="node"} > (count(node_cpu_seconds_total{job="node", mode="idle"}) by (instance)) * 2
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High load average on {{ $labels.instance }}"
+          description: "Load average is higher than twice the number of CPU cores for over 5 minutes."
+
+      # Memory Usage Alerts
+      - alert: HighMemoryUsage
+        expr: (node_memory_MemTotal_bytes{job="node"} - node_memory_MemAvailable_bytes{job="node"}) / node_memory_MemTotal_bytes{job="node"} * 100 > 90
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High memory usage on {{ $labels.instance }}"
+          description: "Memory usage is above 90% for more than 5 minutes."
+
+      - alert: HighSwapUsage
+        expr: (node_memory_SwapTotal_bytes{job="node"} - node_memory_SwapFree_bytes{job="node"}) / node_memory_SwapTotal_bytes{job="node"} * 100 > 90
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High swap usage on {{ $labels.instance }}"
+          description: "Swap usage exceeds 90% for over 5 minutes."
+
+      # Disk Space and Inode Alerts
+      - alert: LowDiskSpace
+        expr: (node_filesystem_avail_bytes{job="node", fstype!~"tmpfs|aufs|overlay"} / node_filesystem_size_bytes{job="node", fstype!~"tmpfs|aufs|overlay"} * 100) < 10
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Low disk space on {{ $labels.instance }} ({{ $labels.mountpoint }})"
+          description: "Only {{ printf \"%.2f\" $value }}% disk space available on {{ $labels.mountpoint }}."
+
+      - alert: DiskInodesExhausted
+        expr: (node_filesystem_avail_inodes{job="node", fstype!~"tmpfs|aufs|overlay"} / node_filesystem_size_inodes{job="node", fstype!~"tmpfs|aufs|overlay"} * 100) < 10
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Low inode count on {{ $labels.instance }} ({{ $labels.mountpoint }})"
+          description: "Only {{ printf \"%.2f\" $value }}% inodes available on {{ $labels.mountpoint }}."
+
+      # Disk I/O Alerts
+      - alert: HighDiskIO
+        expr: rate(node_disk_io_time_seconds_total{job="node"}[5m]) > 0.9
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High disk I/O on {{ $labels.instance }}"
+          description: "Disk I/O time is above 90% for more than 5 minutes."
+
+      # Network Alerts
+      - alert: HighNetworkTraffic
+        expr: rate(node_network_receive_bytes_total{job="node"}[5m]) > 1e9 
+               or rate(node_network_transmit_bytes_total{job="node"}[5m]) > 1e9
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High network traffic on {{ $labels.instance }}"
+          description: "Network traffic has exceeded the threshold for more than 5 minutes."
+
+      - alert: NetworkInterfaceDown
+        expr: up{job="node", device!=""} == 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Network interface down on {{ $labels.instance }}"
+          description: "The network interface {{ $labels.device }} is down."
+
+      # Filesystem Errors
+      - alert: FilesystemErrors
+        expr: rate(node_filesystem_errors_total{job="node"}[5m]) > 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Filesystem errors on {{ $labels.instance }} ({{ $labels.mountpoint }})"
+          description: "Filesystem {{ $labels.mountpoint }} has encountered errors."
+
+      # System Load Alerts
+      - alert: HighSystemLoad
+        expr: node_load1{job="node"} > (node_num_cpu{job="node"} * 2)
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High system load on {{ $labels.instance }}"
+          description: "System load is higher than twice the number of CPU cores for more than 5 minutes."
+
+      # Test Alert
+      - alert: TestAlert
+        annotations:
+          description: "This is a test alert to ensure Alertmanager is working correctly."
+          summary: "Test alert for Alertmanager."
+        expr: vector(1) == 1
+        labels:
+          severity: test
+
+
