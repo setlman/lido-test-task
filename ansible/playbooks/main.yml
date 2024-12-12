@@ -2,9 +2,9 @@
   become: true
   roles:
 
-    - prometheus
-#    - grafana
+    # - prometheus
+    # - grafana
     # - node_exporter
     # - alertmanager
     # - cadvisor
-#    - loki
+    - loki

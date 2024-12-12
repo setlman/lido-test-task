@@ -1,3 +1,5 @@
-#SPDX-License-Identifier: MIT-0
 ---
-# handlers file for ansible/roles/prometheus
+- name: Restart Prometheus
+  community.docker.docker_compose_v2:
+    project_src: "{{ prometheus_install_dir }}"
+    state: restarted

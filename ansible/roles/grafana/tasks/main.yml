@@ -13,29 +13,23 @@
   loop_control:
     label: "{{ item }}"
 
-- name: Copy dashboard provisioner
+- name: Copy dashboard and provisioner
   copy:
-    src: dashboards.yaml
-    dest: "{{ grafana_dashboards_dir }}/custom-dashboard.json"
+    src: dashboards/
+    dest: "{{ grafana_dashboards_dir }}"
     owner: root
     group: root
     mode: '0644'
-
-- name: Copy custom dashboard JSON
-  copy:
-    src: custom-dashboard.json
-    dest: "{{ grafana_dashboards_dir }}/custom-dashboard.json"
-    owner: root
-    group: root
-    mode: '0644'
+  notify: Restart Grafana
 
 - name: Copy Prometheus data source JSON
-  template:
-    src: datasources.yml.j2
+  copy:
+    src: datasources.yml
     dest: "{{ grafana_datasources_dir }}/datasource-prometheus.yml"
     owner: root
     group: root
     mode: '0644'
+  notify: Restart Grafana
 
 - name: Deploy Docker Compose file for Grafana
   template:

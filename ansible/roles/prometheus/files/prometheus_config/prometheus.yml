@@ -1,6 +1,6 @@
 # # # my global config
 global:
-  scrape_interval: 30s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
+  scrape_interval: 25s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
   evaluation_interval: 30s # Evaluate rules every 15 seconds. The default is every 1 minute.
   # scrape_timeout is set to the global default (10s).
 
@@ -16,6 +16,7 @@ alerting:
 rule_files:
      - monitoring.rules.yml
      - alerts.rules.yml
+
 
 # # A scrape configuration containing exactly one endpoint to scrape:
 # # Here it's Prometheus itself.

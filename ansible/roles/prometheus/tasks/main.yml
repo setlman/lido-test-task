@@ -1,13 +1,15 @@
 
+# don't forget to remove it
+
 - name: Create shared Docker network
   community.docker.docker_network:
     name: monitoring
     driver: bridge
     state: present
 
-- name: Ensure /opt/prometheus directory exists
+- name: Ensure {{ prometheus_install_dir }} directory exists
   file:
-    path: "/opt/prometheus"
+    path: "{{ prometheus_install_dir }}"
     state: directory
     owner: root
     group: root
@@ -16,37 +18,40 @@
 - name: Copy Prometheus config
   copy:
     src: "prometheus_config/prometheus.yml"
-    dest: "/opt/prometheus/prometheus.yml"
+    dest: "{{ prometheus_install_dir }}/prometheus.yml"
     owner: root
     group: root
     mode: '0644'
+  notify: Restart Prometheus
 
 - name: Copy Prometheus alerting rules
   copy:
     src: "prometheus_config/monitoring.rules.yml"
-    dest: "/opt/prometheus/monitoring.rules.yml"
+    dest: "{{ prometheus_install_dir }}/monitoring.rules.yml"
     owner: root
     group: root
     mode: '0644'
+  notify: Restart Prometheus
 
 - name: Copy Prometheus alerts exporter additional rules
   copy:
     src: "prometheus_config/alerts.rules.yml"
-    dest: "/opt/prometheus/alerts.rules.yml"
+    dest: "{{ prometheus_install_dir }}/alerts.rules.yml"
     owner: root
     group: root
     mode: '0644'
+  notify: Restart Prometheus
 
 - name: Copy Docker-compose for Prometheus
   template:
     src: "docker-compose.yml.j2"
-    dest: "/opt/prometheus/docker-compose.yml"
+    dest: "{{ prometheus_install_dir }}/docker-compose.yml"
     owner: root
     group: root
     mode: '0644'
 
 - name: Deploy (start) Prometheus with docker-compose
   community.docker.docker_compose_v2:
-    project_src: "/opt/prometheus"
-    state: restarted
+    project_src: "{{ prometheus_install_dir }}"
+    state: present
 

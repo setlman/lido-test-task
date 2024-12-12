@@ -42,13 +42,13 @@ groups:
 
       # Disk Space and Inode Alerts
       - alert: LowDiskSpace
-        expr: (node_filesystem_avail_bytes{job="node", fstype!~"tmpfs|aufs|overlay"} / node_filesystem_size_bytes{job="node", fstype!~"tmpfs|aufs|overlay"} * 100) < 10
+        expr: min(node_filesystem_avail_bytes{job="node", fstype!~"tmpfs|aufs|overlay"} / node_filesystem_size_bytes{job="node", fstype!~"tmpfs|aufs|overlay"} * 100) by (instance) < 10
         for: 5m
         labels:
           severity: critical
         annotations:
-          summary: "Low disk space on {{ $labels.instance }} ({{ $labels.mountpoint }})"
-          description: "Only {{ printf \"%.2f\" $value }}% disk space available on {{ $labels.mountpoint }}."
+          summary: "Low disk space on instance {{ $labels.instance }}"
+          description: "One or more mount points on {{ $labels.instance }} have less than 10% disk space available."
 
       - alert: DiskInodesExhausted
         expr: (node_filesystem_avail_inodes{job="node", fstype!~"tmpfs|aufs|overlay"} / node_filesystem_size_inodes{job="node", fstype!~"tmpfs|aufs|overlay"} * 100) < 10
@@ -117,5 +117,3 @@ groups:
         expr: vector(1) == 1
         labels:
           severity: test
-
-
