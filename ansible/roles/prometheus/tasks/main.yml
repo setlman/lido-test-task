@@ -1,3 +1,52 @@
-#SPDX-License-Identifier: MIT-0
----
-# tasks file for ansible/roles/prometheus
+
+- name: Create shared Docker network
+  community.docker.docker_network:
+    name: monitoring
+    driver: bridge
+    state: present
+
+- name: Ensure /opt/prometheus directory exists
+  file:
+    path: "/opt/prometheus"
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Copy Prometheus config
+  copy:
+    src: "prometheus_config/prometheus.yml"
+    dest: "/opt/prometheus/prometheus.yml"
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Copy Prometheus alerting rules
+  copy:
+    src: "prometheus_config/monitoring.rules.yml"
+    dest: "/opt/prometheus/monitoring.rules.yml"
+    owner: root
+    group: root
+    mode: '0644'
+
+# - name: Copy Prometheus node exporter additional rules
+#   copy:
+#     src: "prometheus_config/node.rules.yml"
+#     dest: "/opt/prometheus/node.rules.yml"
+#     owner: root
+#     group: root
+#     mode: '0644'
+
+- name: Copy Docker-compose for Prometheus
+  template:
+    src: "docker-compose.yml.j2"
+    dest: "/opt/prometheus/docker-compose.yml"
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Deploy (start) Prometheus with docker-compose
+  community.docker.docker_compose_v2:
+    project_src: "/opt/prometheus"
+    state: restarted
+

@@ -1,3 +1,20 @@
-#SPDX-License-Identifier: MIT-0
----
-# tasks file for ansible/roles/alertmanager
+- name: Ensure /opt/alertmanager directory exists
+  file:
+    path: "/opt/alertmanager"
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Copy Alertmanager Docker Compose file
+  template:
+    src: docker-compose.yml.j2
+    dest: /opt/alertmanager/docker-compose.yml
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Start Alertmanager with Docker Compose
+  community.docker.docker_compose_v2:
+    project_src: "/opt/alertmanager"
+    state: present

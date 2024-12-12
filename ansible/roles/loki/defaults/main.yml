@@ -1,3 +1,4 @@
-#SPDX-License-Identifier: MIT-0
----
-# defaults file for ansible/roles/loki
+loki_install_dir: /opt/loki
+loki_config_dir: /opt/loki/config
+loki_data_dir: /opt/loki/data
+loki_service_name: loki

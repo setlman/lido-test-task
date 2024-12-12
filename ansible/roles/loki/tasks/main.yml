@@ -1,3 +1,35 @@
-#SPDX-License-Identifier: MIT-0
 ---
-# tasks file for ansible/roles/loki
+- name: Ensure required Loki directories exist
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+  loop:
+    - "{{ loki_install_dir }}"
+    - "{{ loki_config_dir }}"
+    - "{{ loki_data_dir }}"
+  loop_control:
+    label: "{{ item }}"
+
+- name: Copy Loki configuration
+  copy:
+    src: loki-config.yml
+    dest: "{{ loki_config_dir }}/loki-config.yml"
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Deploy Docker Compose file for Loki
+  template:
+    src: docker-compose.yml.j2
+    dest: "{{ loki_install_dir }}/docker-compose.yml"
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Start Loki with docker-compose
+  community.docker.docker_compose_v2:
+    project_src: "{{ loki_install_dir }}"
+    state: present

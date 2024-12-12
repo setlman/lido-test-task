@@ -1,0 +1,10 @@
+- hosts: lido
+  become: true
+  roles:
+
+    - prometheus
+#    - grafana
+    # - node_exporter
+    # - alertmanager
+    # - cadvisor
+#    - loki
