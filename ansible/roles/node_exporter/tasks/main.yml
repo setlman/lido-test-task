@@ -7,7 +7,7 @@
     group: root
     mode: '0755'
 
-- name: Copy Docker-compose for Prometheus
+- name: Copy Docker-compose for node_exporter
   template:
     src: "docker-compose.yml.j2"
     dest: "/opt/node_exporter/docker-compose.yml"
@@ -19,4 +19,30 @@
   community.docker.docker_compose_v2:
     project_src: "/opt/node_exporter"
     state: present
+  register: deploy_result
 
+
+- name: Wait for a few seconds before fetching container information
+  ansible.builtin.pause:
+    seconds: 5
+  when: deploy_result is changed
+
+- name: Get information on node_exporter container
+  community.docker.docker_container_info:
+    name: "{{ node_exporter_container_name }}"
+  register: container_info
+
+- name: Notify if container does not exist
+  ansible.builtin.fail:
+    msg: "node_exporter container '{{ node_exporter_container_name }}' does not exist. Please check deployment."
+  when: not container_info.exists
+
+- name: Notify if container is not running
+  ansible.builtin.fail:
+    msg: "node_exporter container '{{ node_exporter_container_name }}' is not running. Please check configuration."
+  when: container_info.exists and container_info.container.State.Status != "running"
+
+- name: Print node_exporter container status
+  ansible.builtin.debug:
+    msg: "node_exporter container '{{ node_exporter_container_name }}' is running."
+  when: container_info.exists and container_info.container.State.Status == "running"

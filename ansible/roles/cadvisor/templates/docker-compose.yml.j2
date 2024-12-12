@@ -1,7 +1,7 @@
 services:
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:v0.49.1
-    container_name: cadvisor
+    container_name: {{ cadvisor_container_name }}
     privileged: true
     volumes:
       - "/:/rootfs:ro"

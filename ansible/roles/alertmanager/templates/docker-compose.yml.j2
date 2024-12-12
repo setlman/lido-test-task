@@ -1,7 +1,7 @@
 services:
   alertmanager:
     image: prom/alertmanager
-    container_name: alertmanager
+    container_name: {{ alertmanager_container_name }}
     ports:
       - "9093:9093"
     restart: always

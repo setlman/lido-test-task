@@ -1,7 +1,7 @@
 services:
   loki:
     image: grafana/loki:latest
-    container_name: "{{ loki_service_name }}"
+    container_name: "{{ loki_container_name }}"
     volumes:
       - "{{ loki_config_dir }}/loki-config.yml:/etc/loki/config/local-config.yml"
       - "{{ loki_data_dir }}:/loki"

@@ -1,5 +1,4 @@
 ---
 - name: Restart Prometheus
-  community.docker.docker_compose_v2:
-    project_src: "{{ prometheus_install_dir }}"
-    state: restarted
+  include_tasks: restart_prometheus.yml
+  listen: Restart Prometheus

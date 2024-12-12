@@ -11,16 +11,16 @@
   file:
     path: "{{ prometheus_install_dir }}"
     state: directory
-    owner: root
-    group: root
+    owner: ansible
+    group: ansible
     mode: '0755'
 
 - name: Copy Prometheus config
   copy:
     src: "prometheus_config/prometheus.yml"
     dest: "{{ prometheus_install_dir }}/prometheus.yml"
-    owner: root
-    group: root
+    owner: ansible
+    group: ansible
     mode: '0644'
   notify: Restart Prometheus
 
@@ -28,8 +28,8 @@
   copy:
     src: "prometheus_config/monitoring.rules.yml"
     dest: "{{ prometheus_install_dir }}/monitoring.rules.yml"
-    owner: root
-    group: root
+    owner: ansible
+    group: ansible
     mode: '0644'
   notify: Restart Prometheus
 
@@ -37,8 +37,8 @@
   copy:
     src: "prometheus_config/alerts.rules.yml"
     dest: "{{ prometheus_install_dir }}/alerts.rules.yml"
-    owner: root
-    group: root
+    owner: ansible
+    group: ansible
     mode: '0644'
   notify: Restart Prometheus
 
@@ -46,9 +46,10 @@
   template:
     src: "docker-compose.yml.j2"
     dest: "{{ prometheus_install_dir }}/docker-compose.yml"
-    owner: root
-    group: root
+    owner: ansible
+    group: ansible
     mode: '0644'
+  notify: Restart Prometheus
 
 - name: Deploy (start) Prometheus with docker-compose
   community.docker.docker_compose_v2:

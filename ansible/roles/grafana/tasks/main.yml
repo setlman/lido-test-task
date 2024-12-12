@@ -22,7 +22,7 @@
     mode: '0644'
   notify: Restart Grafana
 
-- name: Copy Prometheus data source JSON
+- name: Copy datasources JSON
   copy:
     src: datasources.yml
     dest: "{{ grafana_datasources_dir }}/datasource-prometheus.yml"
@@ -38,6 +38,7 @@
     owner: root
     group: root
     mode: '0644'
+  notify: Restart Grafana
 
 - name: Deploy (start) Grafana with docker-compose
   community.docker.docker_compose_v2:

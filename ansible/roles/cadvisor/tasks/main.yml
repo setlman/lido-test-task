@@ -20,3 +20,28 @@
     project_src: "/opt/cadvisor"
     state: present
 
+- name: Wait for a few seconds before fetching container information
+  ansible.builtin.pause:
+    seconds: 5
+  when: deploy_result is changed
+
+- name: Get information on cadvisor container
+  community.docker.docker_container_info:
+    name: "{{ cadvisor_container_name }}"
+  register: container_info
+
+- name: Notify if container does not exist
+  ansible.builtin.fail:
+    msg: "cadvisor container '{{ cadvisor_container_name }}' does not exist. Please check deployment."
+  when: not container_info.exists
+
+- name: Notify if container is not running
+  ansible.builtin.fail:
+    msg: "cadvisor container '{{ cadvisor_container_name }}' is not running. Please check configuration."
+  when: container_info.exists and container_info.container.State.Status != "running"
+
+- name: Print cadvisor container status
+  ansible.builtin.debug:
+    msg: "cadvisor container '{{ cadvisor_container_name }}' is running."
+  when: container_info.exists and container_info.container.State.Status == "running"
+

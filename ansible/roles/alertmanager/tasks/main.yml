@@ -18,3 +18,30 @@
   community.docker.docker_compose_v2:
     project_src: "/opt/alertmanager"
     state: present
+
+- name: Wait for a few seconds before fetching container information
+  ansible.builtin.pause:
+    seconds: 5
+  when: deploy_result is changed
+
+- name: Get information on alertmanager container
+  community.docker.docker_container_info:
+    name: "{{ alertmanager_container_name }}"
+  register: container_info
+
+- name: Notify if container does not exist
+  ansible.builtin.fail:
+    msg: "alertmanager container '{{ alertmanager_container_name }}' does not exist. Please check deployment."
+  when: not container_info.exists
+
+- name: Notify if container is not running
+  ansible.builtin.fail:
+    msg: "alertmanager container '{{ alertmanager_container_name }}' is not running. Please check configuration."
+  when: container_info.exists and container_info.container.State.Status != "running"
+
+- name: Print alertmanager container status
+  ansible.builtin.debug:
+    msg: "alertmanager container '{{ alertmanager_container_name }}' is running."
+  when: container_info.exists and container_info.container.State.Status == "running"
+
+

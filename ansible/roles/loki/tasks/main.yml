@@ -30,8 +30,10 @@
     owner: root
     group: root
     mode: '0644'
-
+  notify: Restart Loki
+  
 - name: Start Loki with docker-compose
   community.docker.docker_compose_v2:
     project_src: "{{ loki_install_dir }}"
     state: present
+

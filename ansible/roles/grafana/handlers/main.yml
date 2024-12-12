@@ -1,6 +1,6 @@
 ---
-- name: Restart Grafana
-  community.docker.docker_compose_v2:
-    project_src: "{{ grafana_install_dir }}"
-    state: restarted
+# handlers/main.yml
 
+- name: Restart Grafana
+  include_tasks: restart_grafana.yml
+  listen: Restart Grafana

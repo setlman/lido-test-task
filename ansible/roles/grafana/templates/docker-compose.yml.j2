@@ -1,7 +1,7 @@
 services:
   grafana:
     image: grafana/grafana:latest
-    container_name: "{{ grafana_service_name }}"
+    container_name: "{{ grafana_container_name }}"
     volumes:
       - "{{ grafana_dashboards_dir }}:/etc/grafana/provisioning/dashboards"
       - "{{ grafana_datasources_dir }}:/etc/grafana/provisioning/datasources"

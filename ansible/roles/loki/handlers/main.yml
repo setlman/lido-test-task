@@ -1,6 +1,6 @@
 ---
-- name: Restart Loki
-  community.docker.docker_compose_v2:
-    project_src: "{{ loki_install_dir }}"
-    state: restarted
+# handlers/main.yml
 
+- name: Restart Loki
+  include_tasks: restart_loki.yml
+  listen: Restart Loki
