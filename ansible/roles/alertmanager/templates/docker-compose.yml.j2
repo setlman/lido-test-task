@@ -1,27 +1,16 @@
-# alertmanager/templates/docker-compose.yml.j2
-
 services:
   alertmanager:
-    image: "{{ alertmanager_image }}:{{ alertmanager_image_tag }}"
-    container_name: "{{ alertmanager_container_name }}"
+    image: {{ alertmanager_image }}:{{ alertmanager_image_tag }}
+    container_name: {{ alertmanager_container_name }}
     ports:
-      {% for port in alertmanager_ports %}
-      - "{{ port }}"
-      {% endfor %}
-    restart: "{{ alertmanager_restart_policy }}"
+      - "9093:9093"
+    restart: always
     networks:
-      {% for network in alertmanager_networks %}
-      - "{{ network }}"
-      {% endfor %}
+      - monitoring
     labels:
-      {% for key, value in alertmanager_labels.items() %}
-      {{ key }}: "{{ value }}"
-      {% endfor %}
+      prometheus_job: "alertmanager"
+      prometheus_port: "9093"
 
 networks:
-  {% for network_name, network_def in alertmanager_network_definitions.items() %}
-  {{ network_name }}:
-    {% for key, value in network_def.items() %}
-    {{ key }}: {{ value }}
-    {% endfor %}
-  {% endfor %}
+  monitoring:
+    external: true

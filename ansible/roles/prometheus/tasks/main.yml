@@ -1,50 +1,37 @@
-- name: Ensure {{ prometheus_install_dir }} directory exists
+# tasks/main.yml
+
+- name: Ensure Prometheus installation directory exists
   file:
     path: "{{ prometheus_install_dir }}"
     state: directory
-    owner: ansible
-    group: ansible
-    mode: '0755'
+    owner: "{{ prometheus_owner }}"
+    group: "{{ prometheus_group }}"
+    mode: "{{ prometheus_directory_mode }}"
   become: yes
 
-- name: Copy Prometheus config
+- name: Copy Prometheus configuration files
   copy:
-    src: "prometheus_config/prometheus.yml"
-    dest: "{{ prometheus_install_dir }}/prometheus.yml"
-    owner: ansible
-    group: ansible
-    mode: '0644'
+    src: "{{ item.src }}"
+    dest: "{{ prometheus_install_dir }}/{{ item.dest }}"
+    owner: "{{ prometheus_owner }}"
+    group: "{{ prometheus_group }}"
+    mode: "{{ prometheus_file_mode }}"
+  loop:
+    - { src: "prometheus_config/prometheus.yml", dest: "prometheus.yml" }
+    - { src: "prometheus_config/monitoring.rules.yml", dest: "monitoring.rules.yml" }
+    - { src: "prometheus_config/alerts.rules.yml", dest: "alerts.rules.yml" }
   notify: Restart Prometheus
 
-- name: Copy Prometheus alerting rules
-  copy:
-    src: "prometheus_config/monitoring.rules.yml"
-    dest: "{{ prometheus_install_dir }}/monitoring.rules.yml"
-    owner: ansible
-    group: ansible
-    mode: '0644'
-  notify: Restart Prometheus
-
-- name: Copy Prometheus alerts exporter additional rules
-  copy:
-    src: "prometheus_config/alerts.rules.yml"
-    dest: "{{ prometheus_install_dir }}/alerts.rules.yml"
-    owner: ansible
-    group: ansible
-    mode: '0644'
-  notify: Restart Prometheus
-
-- name: Copy Docker-compose for Prometheus
+- name: Copy Docker Compose file for Prometheus
   template:
     src: "docker-compose.yml.j2"
     dest: "{{ prometheus_install_dir }}/docker-compose.yml"
-    owner: ansible
-    group: ansible
-    mode: '0644'
+    owner: "{{ prometheus_owner }}"
+    group: "{{ prometheus_group }}"
+    mode: "{{ prometheus_file_mode }}"
   notify: Restart Prometheus
 
-- name: Deploy (start) Prometheus with docker-compose
+- name: Deploy (start) Prometheus with Docker Compose
   community.docker.docker_compose_v2:
     project_src: "{{ prometheus_install_dir }}"
     state: present
-
