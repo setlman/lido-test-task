@@ -1,6 +1,6 @@
 services:
   cadvisor:
-    image: gcr.io/cadvisor/cadvisor:v0.49.1
+    image: {{ cadvisor_image }}:{{ cadvisor_image_tag }}
     container_name: {{ cadvisor_container_name }}
     privileged: true
     volumes:

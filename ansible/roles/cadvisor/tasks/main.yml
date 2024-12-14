@@ -1,27 +1,27 @@
 
 - name: Ensure /opt/cadvisor directory exists
   file:
-    path: "/opt/cadvisor"
+    path: "{{ cadvisor_install_dir }}"
     state: directory
-    owner: ansible
-    group: ansible
-    mode: '0755'
+    owner: "{{ cadvisor_owner }}"
+    group: "{{ cadvisor_group }}"
+    mode: "{{ cadvisor_directory_mode }}"
   become: yes
 
 - name: Copy Docker-compose for Prometheus
   template:
-    src: "docker-compose.yml.j2"
-    dest: "/opt/cadvisor/docker-compose.yml"
-    owner: ansible
-    group: ansible
-    mode: '0644'
+    src: docker-compose.yml.j2
+    dest: "{{ cadvisor_install_dir }}/docker-compose.yml"
+    owner: "{{ cadvisor_owner }}"
+    group: "{{ cadvisor_group }}"
+    mode: "{{ docker_compose_file_mode }}"
 
 - name: Deploy (start) cadvisor with docker-compose
   community.docker.docker_compose_v2:
-    project_src: "/opt/cadvisor"
+    project_src: "{{ cadvisor_install_dir }}"
     state: present
   register: deploy_result
-  
+
 - name: Wait for a few seconds before fetching container information
   ansible.builtin.pause:
     seconds: 5

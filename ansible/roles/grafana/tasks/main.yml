@@ -1,4 +1,10 @@
 ---
+- name: Create shared Docker network
+  community.docker.docker_network:
+    name: monitoring
+    driver: bridge
+    state: present
+
 - name: Ensure required Grafana directories exist on the server
   file:
     path: "{{ item }}"

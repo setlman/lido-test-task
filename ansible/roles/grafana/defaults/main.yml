@@ -5,3 +5,5 @@ grafana_docker_compose_file: "{{ grafana_install_dir }}/docker-compose.yml"
 grafana_container_name: grafana
 grafana_admin_password: 2451919
 prometheus_url: http://prometheus:9090
+grafana_image: grafana/grafana
+grafana_image_tag: 11.4.0

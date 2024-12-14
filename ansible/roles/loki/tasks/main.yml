@@ -23,7 +23,6 @@
     mode: '0644'
   notify: Restart Loki
 
-
 - name: Deploy Docker Compose file for Loki
   template:
     src: docker-compose.yml.j2
@@ -37,27 +36,3 @@
   community.docker.docker_compose_v2:
     project_src: "{{ loki_install_dir }}"
     state: present
-
-# - name: Install grafana/loki-docker-driver plugin
-#   community.docker.docker_plugin:
-#     plugin_name: grafana/loki-docker-driver:2.9.2
-#     alias: loki
-#     state: present
-#   become: yes
-
-# - name: Ensure /etc/docker/ directory exists.
-#   file:
-#     path: /etc/docker
-#     state: directory
-#     mode: 0755
-#   when: docker_daemon_options.keys() | length > 0
-#   become: yes
-
-# - name: Configure Docker daemon options.
-#   copy:
-#     content: "{{ docker_daemon_options | to_nice_json }}"
-#     dest: /etc/docker/daemon.json
-#     mode: 0644
-#   when: docker_daemon_options.keys() | length > 0
-#   notify: restart docker
-#   become: yes

@@ -1,6 +1,6 @@
 services:
   node_exporter:
-    image: quay.io/prometheus/node-exporter:latest
+    image: {{ node_exporter_image }}:{{ node_exporter_image_tag }}
     container_name: {{ node_exporter_container_name }}
     command:
       - '--path.rootfs=/host'
