@@ -4,3 +4,11 @@
 - name: Restart Loki
   include_tasks: restart_loki.yml
   listen: Restart Loki
+
+- name: restart docker
+  service:
+    name: docker
+    state: "{{ docker_restart_handler_state }}"
+  ignore_errors: "{{ ansible_check_mode }}"
+  when: docker_service_manage | bool
+  become: yes

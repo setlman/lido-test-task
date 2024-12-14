@@ -1,12 +1,3 @@
-
-# don't forget to remove it
-
-- name: Create shared Docker network
-  community.docker.docker_network:
-    name: monitoring
-    driver: bridge
-    state: present
-
 - name: Ensure {{ prometheus_install_dir }} directory exists
   file:
     path: "{{ prometheus_install_dir }}"
@@ -14,6 +5,7 @@
     owner: ansible
     group: ansible
     mode: '0755'
+  become: yes
 
 - name: Copy Prometheus config
   copy:

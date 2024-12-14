@@ -3,16 +3,17 @@
   file:
     path: "/opt/node_exporter"
     state: directory
-    owner: root
-    group: root
+    owner: ansible
+    group: ansible
     mode: '0755'
+  become: yes
 
 - name: Copy Docker-compose for node_exporter
   template:
     src: "docker-compose.yml.j2"
     dest: "/opt/node_exporter/docker-compose.yml"
-    owner: root
-    group: root
+    owner: ansible
+    group: ansible
     mode: '0644'
 
 - name: Deploy (start) node_exporter with docker-compose

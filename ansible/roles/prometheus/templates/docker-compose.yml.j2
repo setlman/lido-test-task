@@ -2,6 +2,8 @@ services:
   prometheus:
     image: prom/prometheus
     container_name: {{ prometheus_container_name }}
+# This is a security risk, in real project we have to build our own image with the necessary user or open the sock in another way.
+    user: root 
     volumes:
       - ./monitoring.rules.yml:/etc/prometheus/monitoring.rules.yml
       - ./alerts.rules.yml:/etc/prometheus/alerts.rules.yml

@@ -1,15 +1,15 @@
 - hosts: lido
-  recome_user: root
+  remote_user: root
   roles:
-#    - ansible-role-create-users
-    # - ansible-role-docker
+    - ansible-role-create-users
+    - ansible-role-docker
 
 - hosts: lido
-  recome_user: ansible
+  remote_user: ansible
   roles:
-#    - prometheus
-     - grafana
-#     - node_exporter
-#     - alertmanager
-#     - cadvisor
-#     - loki
+    - prometheus
+    - grafana
+    - node_exporter
+    - alertmanager
+    - cadvisor
+    - loki

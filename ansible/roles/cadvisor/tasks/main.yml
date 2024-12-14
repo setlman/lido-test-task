@@ -3,23 +3,25 @@
   file:
     path: "/opt/cadvisor"
     state: directory
-    owner: root
-    group: root
+    owner: ansible
+    group: ansible
     mode: '0755'
+  become: yes
 
 - name: Copy Docker-compose for Prometheus
   template:
     src: "docker-compose.yml.j2"
     dest: "/opt/cadvisor/docker-compose.yml"
-    owner: root
-    group: root
+    owner: ansible
+    group: ansible
     mode: '0644'
 
 - name: Deploy (start) cadvisor with docker-compose
   community.docker.docker_compose_v2:
     project_src: "/opt/cadvisor"
     state: present
-
+  register: deploy_result
+  
 - name: Wait for a few seconds before fetching container information
   ansible.builtin.pause:
     seconds: 5
