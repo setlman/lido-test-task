@@ -8,9 +8,11 @@
   remote_user: ansible
   roles:
     # - prometheus
-    # - grafana
-    - node_exporter
-    # - alertmanager
-    - cadvisor
     # - loki
+    # - grafana
+    # - node_exporter
+    # - cadvisor
+    # - alertmanager
+
+- import_playbook: result.yml
 

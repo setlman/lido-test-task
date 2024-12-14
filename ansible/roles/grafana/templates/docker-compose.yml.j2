@@ -1,6 +1,6 @@
 services:
   grafana:
-    image: grafana/grafana:latest
+    image: {{ grafana_image }}:{{ grafana_image_tag }}
     container_name: "{{ grafana_container_name }}"
     volumes:
       - "{{ grafana_dashboards_dir }}:/etc/grafana/provisioning/dashboards"

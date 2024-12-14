@@ -1,0 +1,24 @@
+---
+- name: Generate resource access message
+  hosts: lido
+  gather_facts: no
+  tasks:
+    - name: Gather host IP from inventory
+      set_fact:
+        host_ip: "{{ ansible_host | default(inventory_hostname) }}"
+
+    - name: Display access message
+      debug:
+        msg:
+          - "========================="
+          - "🚀 You can access resources here:"
+          - "========================="
+          - "Host: {{ host_ip }}"
+          - "Resources:"
+          - "  -  Alertmanager: http://{{ host_ip }}:9093"
+          - "  -  cAdvisor: http://{{ host_ip }}:8085"
+          - "  -  Node Exporter: http://{{ host_ip }}:9100"
+          - "  -  Grafana: http://{{ host_ip }}:3000" (the pw is adminlido)
+          - "  -  Loki: http://{{ host_ip }}:3100"
+          - "  -  Prometheus: http://{{ host_ip }}:9090"
+

@@ -1,17 +1,11 @@
 ---
-- name: Create shared Docker network
-  community.docker.docker_network:
-    name: monitoring
-    driver: bridge
-    state: present
-
 - name: Ensure required Grafana directories exist on the server
   file:
     path: "{{ item }}"
     state: directory
-    owner: ansible
-    group: ansible
-    mode: '0755'
+    owner: "{{ grafana_owner }}"
+    group: "{{ grafana_group }}"
+    mode: "{{ grafana_directory_mode }}"
   loop:
     - "{{ grafana_install_dir }}"
     - "{{ grafana_dashboards_dir }}"
@@ -24,27 +18,27 @@
   copy:
     src: dashboards/
     dest: "{{ grafana_dashboards_dir }}"
-    owner: ansible
-    group: ansible
-    mode: '0644'
+    owner: "{{ grafana_owner }}"
+    group: "{{ grafana_group }}"
+    mode: "{{ grafana_file_mode }}"
   notify: Restart Grafana
 
 - name: Copy datasources JSON
   copy:
     src: datasources.yml
-    dest: "{{ grafana_datasources_dir }}/datasource-prometheus.yml"
-    owner: ansible
-    group: ansible
-    mode: '0644'
+    dest: "{{ grafana_datasources_dir }}/datasources.yml"
+    owner: "{{ grafana_owner }}"
+    group: "{{ grafana_group }}"
+    mode: "{{ grafana_file_mode }}"
   notify: Restart Grafana
 
 - name: Deploy Docker Compose file for Grafana
   template:
     src: docker-compose.yml.j2
     dest: "{{ grafana_docker_compose_file }}"
-    owner: ansible
-    group: ansible
-    mode: '0644'
+    owner: "{{ grafana_owner }}"
+    group: "{{ grafana_group }}"
+    mode: "{{ grafana_file_mode }}"
   notify: Restart Grafana
 
 - name: Deploy (start) Grafana with docker-compose
