@@ -5,6 +5,7 @@ Thank you for an interesting task!
 Here are more details about each step and what has been done. Hopefully, this will address your questions in advance.
 
 First, regarding the architecture: I decided to use Docker Compose (which required the docker.community collection) as it is the most convenient tool for managing Docker containers without additional orchestration, in my opinion. I also chose a role-based structure for each service, as it better supports scalability and reusability if these roles are needed elsewhere in the future.
+In addition, I decided to set up an Ansible user and run the second part of the playbook using this secure user.
 
 Second, about the test points: 
 1. Ubuntu 22.04/LTS as a host OS
@@ -25,7 +26,7 @@ Prometheus discovers containers via service discovery and has access to /var/run
 8. All configurations should be in IaC. It should be used Ansible as IaC tool
 All configurations were implemented using Ansible roles.
 9. All code should be located in a repository on GitHub
-Pushed.
+Pushed
 10. There should be infrastructure tests for resulted resources/stack (preferably pytest + testinfra)
 I added pytest for each component and for some configurations.
 
