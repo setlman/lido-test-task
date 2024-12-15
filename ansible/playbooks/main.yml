@@ -7,9 +7,9 @@
 - hosts: lido
   remote_user: ansible
   roles:
-    # - prometheus
-    - loki
-    - grafana
+    - prometheus
+    # - loki
+    # - grafana
     # - node_exporter
     # - cadvisor
     # - alertmanager

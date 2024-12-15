@@ -1,5 +1,3 @@
-# tests/infra/test_docker.py
-
 def test_docker_installed(host):
     """Check that Docker is installed."""
     docker = host.package("docker-ce")

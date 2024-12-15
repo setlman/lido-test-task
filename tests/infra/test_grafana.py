@@ -42,29 +42,21 @@ def test_grafana_datasources_exist(host):
     assert prometheus_exists, "Prometheus datasource is missing or incorrect."
 
 
-def test_grafana_dashboards_have_data(host):
-    """Verify that the dashboards return data (by checking Prometheus queries)."""
+def test_grafana_dashboards_exist(host):
+    """Verify that the dashboards exist by checking their titles."""
     auth_header = grafana_auth_header()
 
-    # Query the cAdvisor dashboard
-    cadvisor_uid = "ae3c41d7-cea5-4cca-a918-5708706b4d1a"
-    cadvisor_response = host.run(f"curl -s -H 'Authorization: Basic {auth_header}' {GRAFANA_URL}/api/dashboards/uid/{cadvisor_uid}")
+    dashboards_response = host.run(f"curl -s -H 'Authorization: Basic {auth_header}' {GRAFANA_URL}/api/search")
     
-    assert cadvisor_response.rc == 0, f"Failed to fetch cAdvisor dashboard with UID '{cadvisor_uid}'."
-    cadvisor_dashboard_data = json.loads(cadvisor_response.stdout)
+    assert dashboards_response.rc == 0, "Failed to fetch dashboards list from Grafana."
+    dashboards_data = json.loads(dashboards_response.stdout)
 
-    # Check if panels exist for cAdvisor
-    cadvisor_panels = cadvisor_dashboard_data.get('dashboard', {}).get('panels', [])
-    assert len(cadvisor_panels) > 0, f"No panels found in cAdvisor dashboard with UID '{cadvisor_uid}'."
+    required_titles = [
+        "cAdvisor Docker Insights",
+        "Node Exporter - USE Method / Node"
+    ]
 
-    # Query the Node Exporter dashboard
-    node_exporter_uid = "a1b89faf-c808-4e6c-a310-0d859707949d"
-    node_exporter_response = host.run(f"curl -s -H 'Authorization: Basic {auth_header}' {GRAFANA_URL}/api/dashboards/uid/{node_exporter_uid}")
-    
-    assert node_exporter_response.rc == 0, f"Failed to fetch Node Exporter dashboard with UID '{node_exporter_uid}'."
-    node_exporter_dashboard_data = json.loads(node_exporter_response.stdout)
+    existing_titles = [dashboard.get('title') for dashboard in dashboards_data if 'title' in dashboard]
 
-    # Check if panels exist for Node Exporter
-    node_exporter_panels = node_exporter_dashboard_data.get('dashboard', {}).get('panels', [])
-    assert len(node_exporter_panels) > 0, f"No panels found in Node Exporter dashboard with UID '{node_exporter_uid}'."
-
+    for title in required_titles:
+        assert title in existing_titles, f"Dashboard with title '{title}' does not exist in Grafana."

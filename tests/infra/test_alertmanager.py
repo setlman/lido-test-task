@@ -1,5 +1,3 @@
-# tests/infra/test_alertmanager.py
-
 def test_alertmanager_container_running(host):
     """Check that the Alertmanager container is running."""
     container_name = "alertmanager"

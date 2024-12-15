@@ -1,16 +1,15 @@
 groups:
   - name: node_os_alerts
     rules:
-
       # CPU Usage Alerts
       - alert: HighCPUUsage
-        expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{job="node", mode="idle"}[5m])) * 100) > 90
-        for: 5m
+        expr: (1 - avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[20s]))) * 100 > 80
+        for: 1s # test value
         labels:
           severity: critical
         annotations:
-          summary: "High CPU usage detected on {{ $labels.instance }}"
-          description: "CPU usage has exceeded 90% for more than 5 minutes."
+          summary: "High CPU utilization on {{ $labels.instance }}"
+          description: "CPU utilization is above 80% for the last 10 seconds. Current value: {{ $value | printf \"%.2f\" }}%"
 
       - alert: HighLoadAverage
         expr: node_load1{job="node"} > (count(node_cpu_seconds_total{job="node", mode="idle"}) by (instance)) * 2

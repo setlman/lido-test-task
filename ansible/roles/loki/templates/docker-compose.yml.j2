@@ -11,6 +11,9 @@ services:
     restart: always
     networks:
       - monitoring
+    labels:
+      prometheus_job: "loki"
+      prometheus_port: "3100"
 
 networks:
   monitoring:

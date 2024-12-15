@@ -1,8 +1,9 @@
 import os
 import pytest
 import testinfra
-import json  # Explicit import for JSON operations
+import json
 import base64
+import time
 from testinfra.utils.ansible_runner import AnsibleRunner
 
 # Define the absolute path to your Ansible inventory file
@@ -35,6 +36,9 @@ def host():
 # Define a global fixture to make `json` explicitly available
 @pytest.fixture(scope="session", autouse=True)
 def global_imports():
-    """Make 'json' globally available for all test files."""
     import builtins
     builtins.json = json
+    builtins.pytest = pytest
+    builtins.base64 = base64
+    builtins.time = time
+
