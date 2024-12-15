@@ -1,42 +1,90 @@
-# lido-test-task
+# Lido Test Task
 
-HOW TO RUN ANSIBLE
-git clone git@github.com:setlman/lido-test-task.git
-cd lido-test-task
+This repository contains the setup and configuration required for deploying a DevOps stack using Ansible, Docker, and supporting tools.
 
-nano ansible/playbooks/main.yml 
+## Prerequisites
 
-nano ansible/inventory/hosts.ini
+Ensure the following tools and dependencies are installed before proceeding:
 
-ansible-galaxy collection install community.docker
+- **Ansible**: `>= 2.12`
+  - `ansible-galaxy`
+  - `community.docker` collection
+- **Python**: `>= 3.10`
+- **Pip**: `>= 22.0.2`
+- **SSH Access**:
+  - Root on the remote server must have an SSH key.
+  - Update `main.yml` `ssh_key`, and `hosts.ini` accordingly.
 
-ansible-playbook ansible/playbooks/main.yml -i ansible/inventory/hosts.ini
+## How to Run Ansible
 
-HOW TO RUN TESTS
+Follow these steps to deploy using Ansible:
 
-python3 -m venv venv
-source venv/bin/activate
-pip install -r tests/requirements.txt
-pytest tests
+1. **Clone the Repository**
+
+    ```bash
+    git clone git@github.com:setlman/lido-test-task.git
+    cd lido-test-task
+    ```
+
+2. **Update Configuration Files**
+
+    - Edit the Ansible playbook:
+
+      ```bash
+      nano ansible/playbooks/main.yml
+      ```
+
+    - Edit the inventory file:
+
+      ```bash
+      nano ansible/inventory/hosts.ini
+      ```
+
+3. **Install Ansible Collections**
+
+    ```bash
+    ansible-galaxy collection install community.docker
+    ```
+
+4. **Run the Ansible Playbook**
+
+    ```bash
+    ansible-playbook ansible/playbooks/main.yml -i ansible/inventory/hosts.ini
+    ```
+
+## How to Run Tests
+
+Ensure your testing environment is set up correctly:
+
+1. **Set Up Python Virtual Environment**
+
+    ```bash
+    python3 -m venv venv
+    source venv/bin/activate
+    ```
+
+2. **Install Test Dependencies**
+
+    ```bash
+    pip install -r tests/requirements.txt
+    ```
+
+3. **Run Tests with Pytest**
+
+    ```bash
+    pytest tests
+    ```
+
+## Disclaimer
+
+The application has been tested on the following operating systems:
+
+- **MacOS**
+  - Ansible: [core 2.18.1](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
+  - Python Version: `3.13.1`
+
+- **Ubuntu 22.04**
+  - Ansible: `2.17.7`
+  - Python Version: `3.10.12`
 
 
-prerequisites:
-ansible >= 2.12
-ansible-galaxy
-python >= 3.10
-pip >= 22.0.2
-root on the remote server has ssh key
-main.yml ssh_key and hosts.ini were updated accordingly 
-
-disclaimer
-
-the application was tested on MacOS and Ubuntu
-MacOS
-ansible [core 2.18.1]
-python version = 3.13.1
-
-Ubuntu 22.04
-ansible 2.10.8
-python version = 3.10.12
-
-Ubuntu
