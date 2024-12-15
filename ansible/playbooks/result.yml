@@ -18,7 +18,7 @@
           - "  -  Alertmanager: http://{{ host_ip }}:9093"
           - "  -  cAdvisor: http://{{ host_ip }}:8085"
           - "  -  Node Exporter: http://{{ host_ip }}:9100"
-          - "  -  Grafana: http://{{ host_ip }}:3000" (the pw is adminlido)
+          - "  -  Grafana: http://{{ host_ip }}:3000 (the pw is adminlido)"
           - "  -  Loki: http://{{ host_ip }}:3100"
           - "  -  Prometheus: http://{{ host_ip }}:9090"
 

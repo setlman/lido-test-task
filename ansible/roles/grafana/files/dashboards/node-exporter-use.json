@@ -885,8 +885,8 @@
     ]
   },
   "timezone": "utc",
-  "title": "Node Exporter - USE Method / Node",
-  "uid": "",
+    "title": "Node Exporter - USE Method / Node",
+    "uid": "a1b89faf-c808-4e6c-a310-0d859707949q",
   "version": 0,
   "description": "The USE Method / Node Dashboard for the Prometheus Node Exporter"
 }
