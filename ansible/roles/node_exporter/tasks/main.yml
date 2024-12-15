@@ -22,7 +22,6 @@
     state: present
   register: deploy_result
 
-
 - name: Wait for a few seconds before fetching container information
   ansible.builtin.pause:
     seconds: 5
