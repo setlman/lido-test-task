@@ -1,6 +1,6 @@
 LOKI_URL = "http://127.0.0.1:3100"
 LOKI_LOG_API = f"{LOKI_URL}/loki/api/v1/query_range"
-LOKI_READY_ENDPOINT = f"{LOKI_URL}/ready"
+LOKI_READY_ENDPOINT = f"{LOKI_URL}/ring"
 
 def test_loki_container_running(host):
     """Check that the Loki container is running."""
