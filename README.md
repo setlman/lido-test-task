@@ -1,6 +1,6 @@
 # lido-test-task
 
-how to:
+HOW TO RUN ANSIBLE
 git clone git@github.com:setlman/lido-test-task.git
 cd lido-test-task
 
@@ -12,14 +12,21 @@ ansible-galaxy collection install community.docker
 
 ansible-playbook ansible/playbooks/main.yml -i ansible/inventory/hosts.ini
 
+HOW TO RUN TESTS
+
+python3 -m venv venv
+source venv/bin/activate
+pip install -r tests/requirements.txt
+pytest tests
 
 
 prerequisites:
-ansible 
+ansible >= 2.12
 ansible-galaxy
-python
+python >= 3.10
+pip >= 22.0.2
 root on the remote server has ssh key
-main.yml and hosts.ini were updated accordingly
+main.yml ssh_key and hosts.ini were updated accordingly 
 
 disclaimer
 
