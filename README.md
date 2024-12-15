@@ -36,7 +36,7 @@ Follow these steps to deploy using Ansible:
 1. **Clone the Repository**
 
     ```bash
-    git clone git@github.com:setlman/lido-test-task.git
+    git clone https://github.com/setlman/lido-test-task.git
     cd lido-test-task
     ```
 
