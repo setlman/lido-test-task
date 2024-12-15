@@ -3,7 +3,7 @@
   vars:
 ### adjust your default ssh-key here
     ssh_key: |
-      ssh-rsa AAAAB3NzaC1yc2 nick@MacBook-Pro-Nikita.local
+      ssh-rsa AAAAB3NzaC1yc2 root@Nikita.local
   roles:
     - sudo_user
     - docker
