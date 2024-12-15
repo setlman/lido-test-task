@@ -1,6 +1,6 @@
 # Lido Test Task
 
-This test Ansible repository creates the monitoring infrastructure as specified in the test task. It sets up the necessary Docker containers, connects them with each other, tests their accessibility, and ensures that each component is functioning correctly.
+This Ansible repository automates the deployment of a comprehensive monitoring infrastructure as outlined in the test task. It provisions the necessary Docker containers, establishes connectivity between them, verifies their accessibility, and ensures each component operates seamlessly. The repository utilizes Ansible roles for each service, configures a secure sudo user for Ansible operations, and installs the latest version of Docker on the target machine.
 
 ## Services
 
