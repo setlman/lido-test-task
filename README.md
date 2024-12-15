@@ -4,7 +4,7 @@ This test Ansible repository creates the monitoring infrastructure as specified 
 
 ## Services
 
-The following Docker services will be deployed with their respective versions:
+The following services will be deployed with their respective versions:
 
 | Service          | Image                                    | Version  | Ports                                 |
 |------------------|------------------------------------------|----------|---------------------------------------|
@@ -29,7 +29,7 @@ Ensure the following tools and dependencies are installed before proceeding:
   - Root on the remote server must have an SSH key.
   - Update `main.yml` `ssh_key`, and `hosts.ini` accordingly.
 
-## How to Run Ansible
+## How to Run Ansible playbook with roles
 
 Follow these steps to deploy using Ansible:
 
@@ -42,7 +42,7 @@ Follow these steps to deploy using Ansible:
 
 2. **Update Configuration Files**
 
-    - Edit the Ansible playbook:
+    - Add your current ssh-key in the Ansible playbook:
 
       ```bash
       nano ansible/playbooks/main.yml
@@ -54,7 +54,7 @@ Follow these steps to deploy using Ansible:
       nano ansible/inventory/hosts.ini
       ```
 
-3. **Install Ansible Collections**
+3. **Install Ansible Collections (the version of Ansible should be >= 2.12)**
 
     ```bash
     ansible-galaxy collection install community.docker
