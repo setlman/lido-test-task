@@ -103,6 +103,6 @@ The application has been tested on the following operating systems:
 
 ## Additional Information
 
-If you have any questions, please don't hesitate to contact me. Additionally, please refer to the info.md file with more information regarding each step of the test task.
+If you have any questions, please don't hesitate to contact me. Additionally, please refer to the [`Info.md`](Info.md)file with more information regarding each step of the test task.
 
 
