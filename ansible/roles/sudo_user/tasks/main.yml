@@ -123,11 +123,11 @@
 - name: SSH Keys | Add authorized key for ssh key authentication
   authorized_key:
     user: "{{ item.username }}"
-    key: "{{ item.ssh_key }}"
+    key: "{{ ssh_key }}"
     exclusive: "{{ item.exclusive_ssh_key if item.exclusive_ssh_key is defined else 'no' }}"
     path: "{{ '/home/' + item.username + '/.ssh/authorized_keys' if ansible_check_mode else omit }}"
     state: present
-  when: item.ssh_key is defined and item.servers | intersect(create_users_group_names)
+  when: ssh_key is defined and item.servers | intersect(create_users_group_names)
   loop: '{{ users }}'
   loop_control:
     label: "username: {{ item.username }}, ssh_key: {{ 'True' if item.ssh_key is defined else 'False' }}, exclusive_ssh_key: {{ item.exclusive_ssh_key if item.exclusive_ssh_key is defined else 'False' }}"  # noqa 204

@@ -1,5 +1,8 @@
 - hosts: lido
   remote_user: root
+  vars:
+    ssh_key: |
+      ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCYWC1YpqtiITnf7LNP7k3K351rzlAKLUdMxRN3WoQ8I+u9hiH+MNasf/5KUHoIAc6jDEgAZw8VY3ebFrXz9CVgCnzsjzVrKWOec6+gEpjWGCBmfaAexO/88YnYVbB5zFUZk8C6hnir2nJgFkKzWWyyjobjGo1ek9Hd+jFefnlvlCSI1lJvY8hjITlvmpADyZ40tyl+Vnw8kLMYdnSSCpq1OwFmvNqfx4ygL6WslfL/PYHRr2uqhD6d5UsKr57jGrVbXSKoqGE4ggh8Q7QImDG/Mc0pxfeGRZnC1YltvOOTnVilk2FxhVYzAO4uNJg+NdvRVsmu9FNVW7FBd94vbx4wUIWH3V4Rjnx/nyrr+hc7voF3UyWpUfZGiVeTK638OXIxzn9BrJGL7UCaV9TPHwBerGf2WvL+EUWuTXG7keU5I7B3283sPRJc2JAO5GaIvETZk8bDpvNAVlFwopCHvdo+K39zJoMBLxJd/y8= nick@MacBook-Pro-Nikita.local
   roles:
     - sudo_user
     - docker
