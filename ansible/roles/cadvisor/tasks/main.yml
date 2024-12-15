@@ -1,3 +1,49 @@
-#SPDX-License-Identifier: MIT-0
----
-# tasks file for ansible/roles/cadvisor
+
+- name: Ensure /opt/cadvisor directory exists
+  file:
+    path: "{{ cadvisor_install_dir }}"
+    state: directory
+    owner: "{{ cadvisor_owner }}"
+    group: "{{ cadvisor_group }}"
+    mode: "{{ cadvisor_directory_mode }}"
+  become: yes
+
+- name: Copy Docker-compose for Prometheus
+  template:
+    src: docker-compose.yml.j2
+    dest: "{{ cadvisor_install_dir }}/docker-compose.yml"
+    owner: "{{ cadvisor_owner }}"
+    group: "{{ cadvisor_group }}"
+    mode: "{{ docker_compose_file_mode }}"
+
+- name: Deploy (start) cadvisor with docker-compose
+  community.docker.docker_compose_v2:
+    project_src: "{{ cadvisor_install_dir }}"
+    state: present
+  register: deploy_result
+
+- name: Wait for a few seconds before fetching container information
+  ansible.builtin.pause:
+    seconds: 5
+  when: deploy_result is changed
+
+- name: Get information on cadvisor container
+  community.docker.docker_container_info:
+    name: "{{ cadvisor_container_name }}"
+  register: container_info
+
+- name: Notify if container does not exist
+  ansible.builtin.fail:
+    msg: "cadvisor container '{{ cadvisor_container_name }}' does not exist. Please check deployment."
+  when: not container_info.exists
+
+- name: Notify if container is not running
+  ansible.builtin.fail:
+    msg: "cadvisor container '{{ cadvisor_container_name }}' is not running. Please check configuration."
+  when: container_info.exists and container_info.container.State.Status != "running"
+
+- name: Print cadvisor container status
+  ansible.builtin.debug:
+    msg: "cadvisor container '{{ cadvisor_container_name }}' is running."
+  when: container_info.exists and container_info.container.State.Status == "running"
+

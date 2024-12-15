@@ -1,3 +1,20 @@
-#SPDX-License-Identifier: MIT-0
----
-# defaults file for ansible/roles/loki
+# defaults/main.yml
+
+# Installation Directories
+loki_install_dir: /opt/loki
+loki_data_dir: /opt/loki/data
+loki_docker_compose_file: "{{ loki_install_dir }}/docker-compose.yml"
+loki_config_dir: /opt/loki/config
+
+# Ownership and Permissions
+loki_owner: ansible
+loki_group: ansible
+loki_directory_mode: '0755'
+loki_file_mode: '0644'
+
+# Docker Compose Configuration
+
+loki_container_name: loki
+loki_image: grafana/loki
+loki_image_tag: 3.3.1
+

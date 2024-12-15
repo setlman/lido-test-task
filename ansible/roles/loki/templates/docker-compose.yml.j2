@@ -1,0 +1,20 @@
+services:
+  loki:
+    image: {{ loki_image }}:{{ loki_image_tag }}
+    container_name: "{{ loki_container_name }}"
+    volumes:
+      - "{{ loki_config_dir }}/loki-config.yml:/etc/loki/config/local-config.yml"
+      - "{{ loki_data_dir }}:/loki"
+    command: -config.file=/etc/loki/config/local-config.yml
+    ports:
+      - "3100:3100"
+    restart: always
+    networks:
+      - monitoring
+    labels:
+      prometheus_job: "loki"
+      prometheus_port: "3100"
+
+networks:
+  monitoring:
+    external: true

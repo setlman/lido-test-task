@@ -1,0 +1,22 @@
+- hosts: lido
+  remote_user: root
+  vars:
+### adjust your default ssh-key here
+    ssh_key: |
+      ssh-rsa AAAAB3NzaC1yc2 root@Nikita.local
+  roles:
+    - sudo_user
+    - docker
+
+- hosts: lido
+  remote_user: ansible
+  roles:
+    - prometheus
+    - loki
+    - grafana
+    - node_exporter
+    - cadvisor
+    - alertmanager
+
+- import_playbook: result.yml
+

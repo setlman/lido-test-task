@@ -1,0 +1,31 @@
+---
+# handlers/restart_loki.yml
+
+    - name: Restart Loki container
+      community.docker.docker_compose_v2:
+        project_src: "{{ loki_install_dir }}"
+        state: restarted
+
+    - name: Wait for a few seconds before fetching container information
+      ansible.builtin.pause:
+        seconds: 5
+
+    - name: Get information on Loki container
+      community.docker.docker_container_info:
+        name: "{{ loki_container_name }}"
+      register: container_info
+
+    - name: Notify if container does not exist
+      ansible.builtin.fail:
+        msg: "Loki container '{{ loki_container_name }}' does not exist. Please check deployment."
+      when: not container_info.exists
+
+    - name: Notify if container is not running
+      ansible.builtin.fail:
+        msg: "Loki container '{{ loki_container_name }}' is not running. Please check configuration."
+      when: container_info.exists and container_info.container.State.Status != "running"
+
+    - name: Print Loki container status
+      ansible.builtin.debug:
+        msg: "Loki container '{{ loki_container_name }}' is running and healthy."
+      when: container_info.exists and container_info.container.State.Status == "running"

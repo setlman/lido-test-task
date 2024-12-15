@@ -1,3 +1,16 @@
-#SPDX-License-Identifier: MIT-0
----
-# defaults file for ansible/roles/cadvisor
+# defaults/main.yml
+
+# Installation Directory
+cadvisor_install_dir: /opt/cadvisor
+
+# Ownership and Permissions
+cadvisor_owner: ansible
+cadvisor_group: ansible
+cadvisor_directory_mode: '0755'
+docker_compose_file_mode: '0644'
+
+# Docker Compose Configuration
+cadvisor_container_name: cadvisor
+cadvisor_image: gcr.io/cadvisor/cadvisor
+cadvisor_image_tag: v0.49.1
+

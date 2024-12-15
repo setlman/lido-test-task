@@ -1,3 +1,48 @@
-#SPDX-License-Identifier: MIT-0
----
-# tasks file for ansible/roles/node_exporter
+
+- name: Ensure /opt/node_exporter directory exists
+  file:
+    path: "{{ node_exporter_install_dir }}"
+    state: directory
+    owner: "{{ node_exporter_owner }}"
+    group: "{{ node_exporter_group }}"
+    mode: "{{ node_exporter_directory_mode }}"
+  become: yes
+
+- name: Copy Docker-compose for Prometheus
+  template:
+    src: docker-compose.yml.j2
+    dest: "{{ node_exporter_install_dir }}/docker-compose.yml"
+    owner: "{{ node_exporter_owner }}"
+    group: "{{ node_exporter_group }}"
+    mode: "{{ docker_compose_file_mode }}"
+
+- name: Deploy (start) node_exporter with docker-compose
+  community.docker.docker_compose_v2:
+    project_src: "{{ node_exporter_install_dir }}"
+    state: present
+  register: deploy_result
+
+- name: Wait for a few seconds before fetching container information
+  ansible.builtin.pause:
+    seconds: 5
+  when: deploy_result is changed
+
+- name: Get information on node_exporter container
+  community.docker.docker_container_info:
+    name: "{{ node_exporter_container_name }}"
+  register: container_info
+
+- name: Notify if container does not exist
+  ansible.builtin.fail:
+    msg: "node_exporter container '{{ node_exporter_container_name }}' does not exist. Please check deployment."
+  when: not container_info.exists
+
+- name: Notify if container is not running
+  ansible.builtin.fail:
+    msg: "node_exporter container '{{ node_exporter_container_name }}' is not running. Please check configuration."
+  when: container_info.exists and container_info.container.State.Status != "running"
+
+- name: Print node_exporter container status
+  ansible.builtin.debug:
+    msg: "node_exporter container '{{ node_exporter_container_name }}' is running."
+  when: container_info.exists and container_info.container.State.Status == "running"

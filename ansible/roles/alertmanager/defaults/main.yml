@@ -1,3 +1,16 @@
-#SPDX-License-Identifier: MIT-0
----
-# defaults file for ansible/roles/alertmanager
+# defaults/main.yml
+
+# Installation Directory
+alertmanager_install_dir: /opt/alertmanager
+
+# Ownership and Permissions
+alertmanager_owner: ansible
+alertmanager_group: ansible
+alertmanager_directory_mode: '0755'
+docker_compose_file_mode: '0644'
+
+# Docker Compose Configuration
+alertmanager_container_name: alertmanager
+alertmanager_image: prom/alertmanager
+alertmanager_image_tag: v0.27.0
+

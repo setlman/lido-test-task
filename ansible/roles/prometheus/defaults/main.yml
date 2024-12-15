@@ -1,3 +1,23 @@
-#SPDX-License-Identifier: MIT-0
----
-# defaults file for ansible/roles/prometheus
+# defaults/main.yml
+
+# Installation Directory
+prometheus_install_dir: /opt/prometheus
+
+# Ownership and Permissions
+prometheus_owner: ansible
+prometheus_group: ansible
+prometheus_directory_mode: '0755'
+prometheus_file_mode: '0644'
+
+# Docker Compose Configuration
+prometheus_container_name: prometheus
+prometheus_image: prom/prometheus
+prometheus_image_tag: v3.0.1
+# Root is a security risk, in real project we have to build our own image with the necessary user or open the sock in another way.
+prometheus_user: root
+
+# Prometheus Configuration Files
+prometheus_config_files:
+  alerts_rules: "prometheus_config/alerts.rules.yml"
+  monitoring_rules: "prometheus_config/monitoring.rules.yml"
+  prometheus_yml: "prometheus_config/prometheus.yml"

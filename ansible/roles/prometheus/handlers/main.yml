@@ -1,3 +1,4 @@
-#SPDX-License-Identifier: MIT-0
 ---
-# handlers file for ansible/roles/prometheus
+- name: Restart Prometheus
+  include_tasks: restart_prometheus.yml
+  listen: Restart Prometheus

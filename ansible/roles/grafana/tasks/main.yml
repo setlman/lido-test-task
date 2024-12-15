@@ -1,3 +1,47 @@
-#SPDX-License-Identifier: MIT-0
 ---
-# tasks file for ansible/roles/grafana
+- name: Ensure required Grafana directories exist on the server
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ grafana_owner }}"
+    group: "{{ grafana_group }}"
+    mode: "{{ grafana_directory_mode }}"
+  loop:
+    - "{{ grafana_install_dir }}"
+    - "{{ grafana_dashboards_dir }}"
+    - "{{ grafana_datasources_dir }}"
+  loop_control:
+    label: "{{ item }}"
+  become: yes
+
+- name: Copy dashboard and provisioner
+  copy:
+    src: dashboards/
+    dest: "{{ grafana_dashboards_dir }}"
+    owner: "{{ grafana_owner }}"
+    group: "{{ grafana_group }}"
+    mode: "{{ grafana_file_mode }}"
+  notify: Restart Grafana
+
+- name: Copy datasources JSON
+  copy:
+    src: datasources.yml
+    dest: "{{ grafana_datasources_dir }}/datasources.yml"
+    owner: "{{ grafana_owner }}"
+    group: "{{ grafana_group }}"
+    mode: "{{ grafana_file_mode }}"
+  notify: Restart Grafana
+
+- name: Deploy Docker Compose file for Grafana
+  template:
+    src: docker-compose.yml.j2
+    dest: "{{ grafana_docker_compose_file }}"
+    owner: "{{ grafana_owner }}"
+    group: "{{ grafana_group }}"
+    mode: "{{ grafana_file_mode }}"
+  notify: Restart Grafana
+
+- name: Deploy (start) Grafana with docker-compose
+  community.docker.docker_compose_v2:
+    project_src: "{{ grafana_install_dir }}"
+    state: present

@@ -1,3 +1,28 @@
-#SPDX-License-Identifier: MIT-0
----
-# defaults file for ansible/roles/grafana
+# defaults/main.yml
+
+# Installation Directories
+grafana_install_dir: /opt/grafana
+grafana_dashboards_dir: "{{ grafana_install_dir }}/provisioning/dashboards"
+grafana_datasources_dir: "{{ grafana_install_dir }}/provisioning/datasources"
+grafana_docker_compose_file: "{{ grafana_install_dir }}/docker-compose.yml"
+
+# Ownership and Permissions
+grafana_owner: ansible
+grafana_group: ansible
+grafana_directory_mode: '0755'
+grafana_file_mode: '0644'
+
+# Docker Compose Configuration
+
+grafana_container_name: grafana
+grafana_image: grafana/grafana
+grafana_image_tag: 11.4.0
+
+# grafana Configuration Files
+grafana_config_files:
+  alerts_rules: "grafana_config/alerts.rules.yml"
+  monitoring_rules: "grafana_config/monitoring.rules.yml"
+  grafana_yml: "grafana_config/grafana.yml"
+
+# grafana passwords
+grafana_admin_password: adminlido

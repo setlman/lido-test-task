@@ -1,0 +1,118 @@
+groups:
+  - name: node_os_alerts
+    rules:
+      # CPU Usage Alerts
+      - alert: HighCPUUsage
+        expr: (1 - avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[20s]))) * 100 > 80
+        for: 1s # test value
+        labels:
+          severity: critical
+        annotations:
+          summary: "High CPU utilization on {{ $labels.instance }}"
+          description: "CPU utilization is above 80% for the last 10 seconds. Current value: {{ $value | printf \"%.2f\" }}%"
+
+      - alert: HighLoadAverage
+        expr: node_load1{job="node"} > (count(node_cpu_seconds_total{job="node", mode="idle"}) by (instance)) * 2
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High load average on {{ $labels.instance }}"
+          description: "Load average is higher than twice the number of CPU cores for over 5 minutes."
+
+      # Memory Usage Alerts
+      - alert: HighMemoryUsage
+        expr: (node_memory_MemTotal_bytes{job="node"} - node_memory_MemAvailable_bytes{job="node"}) / node_memory_MemTotal_bytes{job="node"} * 100 > 90
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High memory usage on {{ $labels.instance }}"
+          description: "Memory usage is above 90% for more than 5 minutes."
+
+      - alert: HighSwapUsage
+        expr: (node_memory_SwapTotal_bytes{job="node"} - node_memory_SwapFree_bytes{job="node"}) / node_memory_SwapTotal_bytes{job="node"} * 100 > 90
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High swap usage on {{ $labels.instance }}"
+          description: "Swap usage exceeds 90% for over 5 minutes."
+
+      # Disk Space and Inode Alerts
+      - alert: LowDiskSpace
+        expr: min(node_filesystem_avail_bytes{job="node", fstype!~"tmpfs|aufs|overlay"} / node_filesystem_size_bytes{job="node", fstype!~"tmpfs|aufs|overlay"} * 100) by (instance) < 10
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Low disk space on instance {{ $labels.instance }}"
+          description: "One or more mount points on {{ $labels.instance }} have less than 10% disk space available."
+
+      - alert: DiskInodesExhausted
+        expr: (node_filesystem_avail_inodes{job="node", fstype!~"tmpfs|aufs|overlay"} / node_filesystem_size_inodes{job="node", fstype!~"tmpfs|aufs|overlay"} * 100) < 10
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Low inode count on {{ $labels.instance }} ({{ $labels.mountpoint }})"
+          description: "Only {{ printf \"%.2f\" $value }}% inodes available on {{ $labels.mountpoint }}."
+
+      # Disk I/O Alerts
+      - alert: HighDiskIO
+        expr: rate(node_disk_io_time_seconds_total{job="node"}[5m]) > 0.9
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High disk I/O on {{ $labels.instance }}"
+          description: "Disk I/O time is above 90% for more than 5 minutes."
+
+      # Network Alerts
+      - alert: HighNetworkTraffic
+        expr: rate(node_network_receive_bytes_total{job="node"}[5m]) > 1e9 
+               or rate(node_network_transmit_bytes_total{job="node"}[5m]) > 1e9
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High network traffic on {{ $labels.instance }}"
+          description: "Network traffic has exceeded the threshold for more than 5 minutes."
+
+      - alert: NetworkInterfaceDown
+        expr: up{job="node", device!=""} == 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Network interface down on {{ $labels.instance }}"
+          description: "The network interface {{ $labels.device }} is down."
+
+      # Filesystem Errors
+      - alert: FilesystemErrors
+        expr: rate(node_filesystem_errors_total{job="node"}[5m]) > 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Filesystem errors on {{ $labels.instance }} ({{ $labels.mountpoint }})"
+          description: "Filesystem {{ $labels.mountpoint }} has encountered errors."
+
+      # System Load Alerts
+      - alert: HighSystemLoad
+        expr: node_load1{job="node"} > (node_num_cpu{job="node"} * 2)
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High system load on {{ $labels.instance }}"
+          description: "System load is higher than twice the number of CPU cores for more than 5 minutes."
+
+      # Test Alert
+      - alert: TestAlert
+        annotations:
+          description: "This is a test alert to ensure Alertmanager is working correctly."
+          summary: "Test alert for Alertmanager."
+        expr: vector(1) == 1
+        labels:
+          severity: test

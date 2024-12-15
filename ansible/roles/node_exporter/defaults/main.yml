@@ -1,3 +1,16 @@
-#SPDX-License-Identifier: MIT-0
----
-# defaults file for ansible/roles/node_exporter
+# defaults/main.yml
+
+# Installation Directory
+node_exporter_install_dir: /opt/node_exporter
+
+# Ownership and Permissions
+node_exporter_owner: ansible
+node_exporter_group: ansible
+node_exporter_directory_mode: '0755'
+docker_compose_file_mode: '0644'
+
+# Docker Compose Configuration
+node_exporter_container_name: node_exporter
+node_exporter_image: quay.io/prometheus/node-exporter
+node_exporter_image_tag: v1.8.2
+

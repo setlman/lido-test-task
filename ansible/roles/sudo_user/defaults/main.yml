@@ -1,0 +1,18 @@
+---
+# Note: 'debug_enabled_default: true' will put hashed passwords in the output.
+debug_enabled_default: false
+default_update_password: on_create
+default_shell: /bin/bash
+# default_generate_ssh_key_comment: "ansible-generated on {{ ansible_hostname }}"
+default_generate_ssh_key_comment: "ansible-generated for {{ item.username }}@{{ ansible_hostname }}"
+users:
+  - username: ansible
+    update_password: on_create
+    comment: ansible user
+    shell: /bin/bash
+    exclusive_ssh_key: yes
+    use_sudo: yes
+    use_sudo_nopass: yes
+    user_state: present
+    servers:
+      - lido

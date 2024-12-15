@@ -1,0 +1,26 @@
+services:
+  grafana:
+    image: {{ grafana_image }}:{{ grafana_image_tag }}
+    container_name: "{{ grafana_container_name }}"
+    volumes:
+      - "{{ grafana_dashboards_dir }}:/etc/grafana/provisioning/dashboards"
+      - "{{ grafana_datasources_dir }}:/etc/grafana/provisioning/datasources"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD={{ grafana_admin_password }}
+      - GF_DASHBOARDS_JSON_ENABLED=true
+      - GF_PATHS_DASHBOARDS=/var/lib/grafana/dashboards
+    ports:
+      - "3000:3000"
+    restart: always
+    networks:
+      - monitoring
+    labels:
+      prometheus_job: "grafana"
+      prometheus_port: "3000"
+
+volumes:
+  grafana_data:
+
+networks:
+  monitoring: 
+    external: true

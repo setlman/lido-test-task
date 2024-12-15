@@ -1,0 +1,24 @@
+services:
+  cadvisor:
+    image: {{ cadvisor_image }}:{{ cadvisor_image_tag }}
+    container_name: {{ cadvisor_container_name }}
+    privileged: true
+    volumes:
+      - "/:/rootfs:ro"
+      - "/var/run:/var/run:ro"
+      - "/sys:/sys:ro"
+      - "/var/lib/docker/:/var/lib/docker:ro"
+      - "/dev/disk/:/dev/disk:ro"
+      - "/dev/kmsg:/dev/kmsg"
+    ports:
+      - "8085:8080"
+    restart: always
+    networks:
+      - monitoring
+    labels:
+      prometheus_job: "cadvisor"
+      prometheus_port: "8080"
+      
+networks:
+  monitoring:
+    external: true
