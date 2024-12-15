@@ -1,18 +1,18 @@
 - hosts: lido
   remote_user: root
   roles:
-    # - ansible-role-create-users
-    # - ansible-role-docker
+    - sudo_user
+    - docker
 
 - hosts: lido
   remote_user: ansible
   roles:
     - prometheus
-    # - loki
-    # - grafana
-    # - node_exporter
-    # - cadvisor
-    # - alertmanager
+    - loki
+    - grafana
+    - node_exporter
+    - cadvisor
+    - alertmanager
 
-# - import_playbook: result.yml
+- import_playbook: result.yml
 
