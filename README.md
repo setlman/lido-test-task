@@ -29,7 +29,7 @@ Ensure the following tools and dependencies are installed before proceeding:
   - Root on the remote server must have an SSH key.
   - Update `main.yml` `ssh_key`, and `hosts.ini` accordingly.
 
-## How to Run Ansible playbook with roles
+## How to Run Ansible playbook
 
 Follow these steps to deploy using Ansible:
 
