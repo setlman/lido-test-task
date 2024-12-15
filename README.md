@@ -101,4 +101,8 @@ The application has been tested on the following operating systems:
   - Ansible: `2.17.7`
   - Python Version: `3.10.12`
 
+### Info
+
+If any questions apear - don't hesitate to contact me, also please check info.md file with additional information regarding each step of the test task.
+
 
