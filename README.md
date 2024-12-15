@@ -1,6 +1,20 @@
 # Lido Test Task
 
-This repository contains the setup and configuration required for deploying a DevOps stack using Ansible, Docker, and supporting tools.
+This test Ansible repository creates the monitoring infrastructure as specified in the test task. It sets up the necessary Docker containers, connects them with each other, tests their accessibility, and ensures that each component is functioning correctly.
+
+## Services
+
+The following Docker services will be deployed with their respective versions:
+
+| Service          | Image                                    | Version  | Ports                                 |
+|------------------|------------------------------------------|----------|---------------------------------------|
+| Alertmanager     | `prom/alertmanager`                      | `v0.27.0`| `9093:9093`                           |
+| cAdvisor         | `gcr.io/cadvisor/cadvisor`               | `v0.49.1`| `8085:8080`                           |
+| Node Exporter    | `quay.io/prometheus/node-exporter`        | `v1.8.2` | `9100:9100`                           |
+| Grafana          | `grafana/grafana`                         | `11.4.0` | `3000:3000`                           |
+| Loki             | `grafana/loki`                            | `3.3.1`  | `3100:3100`                           |
+| Prometheus       | `prom/prometheus`                         | `v3.0.1` | `9090:9090`                           |
+| **Docker**       | **Latest**                                | **-**    | **-**  
 
 ## Prerequisites
 
