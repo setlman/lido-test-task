@@ -6,6 +6,7 @@ services:
     volumes:
       - ./monitoring.rules.yml:/etc/prometheus/monitoring.rules.yml
       - ./alerts.rules.yml:/etc/prometheus/alerts.rules.yml
+      - ./tests.yml:/etc/prometheus/tests.yml
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus_data:/prometheus
       - /var/run/docker.sock:/var/run/docker.sock:ro
