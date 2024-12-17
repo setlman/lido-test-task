@@ -21,7 +21,6 @@
     - { src: "prometheus_config/monitoring.rules.yml", dest: "monitoring.rules.yml" }
     - { src: "prometheus_config/alerts.rules.yml", dest: "alerts.rules.yml" }
     - { src: "prometheus_config/tests.yml", dest: "tests.yml" }
-
   notify: Restart Prometheus
 
 - name: Copy Docker Compose file for Prometheus
