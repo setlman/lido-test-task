@@ -34,3 +34,60 @@ def test_loki_accessible(host):
     response = host.run(curl_command)
     assert response.rc == 0, f"Failed to execute curl command to {LOKI_READY_ENDPOINT}."
     assert response.stdout.strip() == "200", f"Loki API is not accessible at {LOKI_READY_ENDPOINT}. Expected HTTP 200, got {response.stdout.strip()}."
+
+
+def test_logs_exist_for_all_containers(host):
+    """Dynamically fetch container names and check logs for each container in Loki."""
+    docker_command = "docker ps --format '{{.Names}}'"
+    response = host.run(docker_command)
+
+    assert response.rc == 0, f"Failed to fetch container names. Error: {response.stderr}"
+
+
+    container_names = response.stdout.strip().split("\n")
+    assert container_names, "No running containers found."
+
+    end_time = int(time.time() * 1e9)  
+    start_time = end_time - (5 * 60 * 60 * 1_000_000_000)  
+
+    for container_name in container_names:
+        print(f"Checking logs for container: {container_name}")
+
+        query = f'{{container_name="{container_name}"}}'
+
+        curl_command = (
+            f"curl -G -s '{LOKI_LOG_API}' "
+            f"--data-urlencode 'query={query}' "
+            f"--data-urlencode 'start={start_time}' "
+            f"--data-urlencode 'end={end_time}'"
+        )
+
+        log_response = host.run(curl_command)
+
+        assert log_response.rc == 0, (
+            f"Failed to execute Loki query for container '{container_name}'.\n"
+            f"Error: {log_response.stderr}"
+        )
+
+        try:
+            data = json.loads(log_response.stdout)
+        except json.JSONDecodeError:
+            assert False, (
+                f"Invalid JSON response from Loki for container '{container_name}'.\n"
+                f"Response: {log_response.stdout}"
+            )
+
+        assert data.get('status') == 'success', (
+            f"Loki query failed for container '{container_name}'. Response:\n"
+            f"{json.dumps(data, indent=2)}"
+        )
+
+        results = data.get('data', {}).get('result', [])
+        values = [entry.get('values', []) for entry in results]
+        flattened_values = [log for sublist in values for log in sublist]
+
+        assert flattened_values, f"No logs found for container '{container_name}' in the last 5 hours."
+
+        print(f"Logs for container '{container_name}' (first 5):")
+        for value in flattened_values[:5]:
+            print(value[1])

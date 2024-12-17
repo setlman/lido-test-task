@@ -1,0 +1,67 @@
+rule_files:
+  - alerts.rules.yml
+
+tests:
+  - interval: 1m
+
+    ### HighMemoryUsage ###
+    input_series:
+      - series: 'node_memory_MemTotal_bytes{job="node", instance="node1"}'
+        values: '16000000000 16000000000 16000000000 16000000000 16000000000 16000000000'  # 16GB Total
+      - series: 'node_memory_MemAvailable_bytes{job="node", instance="node1"}'
+        values: '1500000000 1400000000 1300000000 1200000000 1100000000 1000000000'  # Decreasing available memory
+    alert_rule_test:
+      - alertname: HighMemoryUsage
+        eval_time: 5m
+        exp_alerts:
+          - exp_labels:
+              alertname: "HighMemoryUsage"
+              instance: "node1"
+              severity: "critical"
+              job: "node"
+            exp_annotations:
+              summary: "High memory usage on node1"
+              description: "Memory usage is above 90% for more than 5 minutes."
+
+  - interval: 1m
+
+    ### LowDiskSpace ###
+    input_series:
+      - series: 'node_filesystem_avail_bytes{job="node", fstype="ext4", instance="node1", mountpoint="/"}'
+        values: '400000000 400000000 400000000 400000000 400000000 400000000'  # Available space remains below 10%
+      - series: 'node_filesystem_size_bytes{job="node", fstype="ext4", instance="node1", mountpoint="/"}'
+        values: '5000000000 5000000000 5000000000 5000000000 5000000000 5000000000'  # Fixed disk size
+    alert_rule_test:
+      - alertname: LowDiskSpace
+        eval_time: 5m
+        exp_alerts:
+          - exp_labels:
+              alertname: "LowDiskSpace"
+              instance: "node1"
+              severity: "critical"
+              job: "node"
+              fstype: "ext4"
+              mountpoint: "/"
+            exp_annotations:
+              summary: "Low disk space on instance node1"
+              description: "One or more mount points on node1 have less than 10% disk space available."
+
+  - interval: 1m
+
+    ### NetworkInterfaceDown ###
+    input_series:
+      - series: 'up{job="node", device="eth0", instance="node1"}'
+        values: '0 0 0 0 0 0'  # Interface is down
+    alert_rule_test:
+      - alertname: NetworkInterfaceDown
+        eval_time: 5m
+        exp_alerts:
+          - exp_labels:
+              alertname: "NetworkInterfaceDown"
+              instance: "node1"
+              severity: "critical"
+              job: "node"
+              device: "eth0"
+            exp_annotations:
+              summary: "Network interface down on node1"
+              description: "The network interface eth0 is down."
