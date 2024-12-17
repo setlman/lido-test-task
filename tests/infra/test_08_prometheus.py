@@ -172,3 +172,29 @@ def test_high_cpu_usage_alert(host):
         time.sleep(5)
 
     pytest.fail(f"Alert '{alert_name}' did not fire within {timeout} seconds.")
+
+def test_prometheus_rule_tests(host):
+    """
+    Execute Prometheus rule tests using 'promtool' inside the Prometheus container.
+    """
+    container_name = "prometheus"
+    test_rules_file = "/etc/prometheus/tests.yml"
+
+    # Step 1: Ensure the container is running
+    containers = host.run(f"docker ps --filter name=^{container_name}$ --format '{{{{.Names}}}}'")
+    assert containers.rc == 0, "Failed to list Docker containers."
+    assert containers.stdout.strip() == container_name, f"Container '{container_name}' is not running."
+
+    # Step 2: Run promtool test rules
+    promtool_command = (
+        f"docker exec -i {container_name} promtool test rules {test_rules_file}"
+    )
+    response = host.run(promtool_command)
+    assert response.rc == 0, (
+        f"Prometheus 'promtool test rules' failed. Check the output for issues:\n{response.stdout}\n{response.stderr}"
+    )
+
+    # Optional: Print output for debugging
+    print("\nPromtool Test Output:\n")
+    print(response.stdout.strip())
+    assert "SUCCESS" in response.stdout, "Prometheus rule tests did not pass successfully."
